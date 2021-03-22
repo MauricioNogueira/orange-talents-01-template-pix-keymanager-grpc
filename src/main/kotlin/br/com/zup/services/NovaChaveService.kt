@@ -1,7 +1,7 @@
 package br.com.zup.services
 
 import br.com.zup.exceptions.DataRegisterException
-import br.com.zup.requests.NovaChave
+import br.com.zup.requests.NovaChaveRequest
 import br.com.zup.repository.ChavePixRepository
 import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
@@ -12,16 +12,18 @@ import br.com.zup.model.ChavePix
 import br.com.zup.validations.TipoChave
 import org.slf4j.Logger
 import java.util.*
+import javax.transaction.Transactional
 
 @Validated
 @Singleton
+@Transactional
 class NovaChaveService(
     @Inject private val itauService: ItauService,
     @Inject private val chavePixRepository: ChavePixRepository
     ) {
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    fun registrar(@Valid novaChave: NovaChave): ChavePix {
+    fun registrar(@Valid novaChave: NovaChaveRequest): ChavePix {
 
         val contaCliente = this.itauService.buscaCliente(novaChave.idenficadorCliente, novaChave.tipoConta.name) ?: throw IllegalArgumentException("error")
 

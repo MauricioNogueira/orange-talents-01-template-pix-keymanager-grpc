@@ -9,4 +9,5 @@ import java.util.*
 @Repository
 interface ChavePixRepository: JpaRepository<ChavePix, UUID> {
     fun findByClienteIdAndTipoConta(clienteId: String, tipoConta: String): Optional<ChavePix>
+    fun findByIdAndClienteId(pixId: UUID, clienteId: String): Optional<ChavePix>
 }
