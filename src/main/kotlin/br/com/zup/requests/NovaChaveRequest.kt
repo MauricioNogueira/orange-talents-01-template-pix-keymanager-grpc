@@ -3,6 +3,7 @@ package br.com.zup.requests
 import br.com.zup.TipoChave
 import br.com.zup.TipoConta
 import br.com.zup.model.ChavePix
+import br.com.zup.response.ContaClienteResponse
 import br.com.zup.validations.ValidUUID
 import io.micronaut.core.annotation.Introspected
 import org.slf4j.LoggerFactory
@@ -28,15 +29,18 @@ class NovaChaveRequest(
     val tipoConta: TipoConta
 ) {
 
-    fun toModel(): ChavePix {
+    fun toModel(contaClienteResponse: ContaClienteResponse): ChavePix {
         val chave: String = this.tipoChave.name
         val conta: String = this.tipoConta.name
 
         return ChavePix().apply {
             tipoChave =  chave
-            valorChave = if (valor!!.isEmpty() && chave.equals("CHAVE_ALEATORIA")) UUID.randomUUID().toString() else valor
+            valorChave = if (valor!!.isEmpty() && chave.equals("ALEATORIA")) UUID.randomUUID().toString() else valor
             tipoConta = conta
             clienteId = idenficadorCliente
+            participant = contaClienteResponse.instituicao.ispb
+            branch = contaClienteResponse.agencia
+            accountNumber = contaClienteResponse.numero
         }
     }
 

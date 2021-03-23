@@ -7,9 +7,16 @@ class ContaClienteResponse(
     val numero: String,
     val titular: Titular
 ) {
+    override fun toString(): String {
+        return "ContaClienteResponse(tipo='$tipo', instituicao=$instituicao, agencia='$agencia', numero='$numero', titular=$titular)"
+    }
 }
 
-class Instituicao(val nome: String, val ispb: String) {}
+class Instituicao(val nome: String, val ispb: String) {
+    override fun toString(): String {
+        return "Instituicao(nome='$nome', ispb='$ispb')"
+    }
+}
 
 class Titular(val id: String, val nome: String, val cpf: String) {
 

@@ -16,13 +16,13 @@ enum TipoChave {
   CPF = 1;
   TELEFONE = 2;
   EMAIL = 3;
-  CHAVE_ALEATORIA = 4;
+  ALEATORIA = 4;
 }
 
 enum TipoConta {
   UNKNOWN_ACCOUNT = 0;
-  CONTA_POUPANCA = 1;
-  CONTA_CORRENTE = 2;
+  CORRENTE = 1;
+  POUPANCA = 2;
 }
 
 message NovaChavePixRequest {
@@ -38,8 +38,8 @@ message NovaChavePixResponse {
 }
 
 message RemoveChavePixRequest {
-  string pixId = 1;
-  string clienteId = 2;
+  string key = 1;
+  string participant = 2;
 }
 
 message RemoveChavePixResponse {

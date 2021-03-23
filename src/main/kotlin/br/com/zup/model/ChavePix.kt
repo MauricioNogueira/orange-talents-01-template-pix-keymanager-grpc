@@ -26,7 +26,16 @@ class ChavePix {
     @field:NotBlank
     var clienteId: String? = ""
 
+    @field:NotBlank
+    var participant: String? = ""
+
+    @field:NotBlank
+    var branch: String? = ""
+
+    @field:NotBlank
+    var accountNumber: String? = ""
+
     override fun toString(): String {
-        return "ChavePix [id=$id, tipoChave=$tipoChave, valorChave=$valorChave, tipoConta=$tipoConta, clienteId=$clienteId]"
+        return "ChavePix(id=$id, tipoChave=$tipoChave, valorChave=$valorChave, tipoConta=$tipoConta, clienteId=$clienteId, participant=$participant, branch=$branch, accountNumber=$accountNumber)"
     }
 }

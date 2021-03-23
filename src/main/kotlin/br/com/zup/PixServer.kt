@@ -50,7 +50,6 @@ class PixServer(
             .setMensagem("chave pix removida com sucesso")
             .build()
 
-        logger.info("chave pix foi removida: ClienteID: ${request.clienteId}")
 
         responseObserver.onNext(response)
         responseObserver.onCompleted()

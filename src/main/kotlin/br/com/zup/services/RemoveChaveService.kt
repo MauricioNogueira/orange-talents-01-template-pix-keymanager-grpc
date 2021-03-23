@@ -14,22 +14,27 @@ import javax.validation.Valid
 @Validated
 @Singleton
 class RemoveChaveService(
-    @Inject private val chavePixRepository: ChavePixRepository
+    @Inject private val chavePixRepository: ChavePixRepository,
+    @Inject private val bcbService: BCBService
 ) {
     val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Transactional
     fun remove(@Valid request: RemoveChaveRequest) {
-        val uuid: UUID = UUID.fromString(request.pixId)
 
-        val optional = this.chavePixRepository.findByIdAndClienteId(uuid, request.clienteId.toString())
+        val optional = this.chavePixRepository.findByValorChaveAndParticipant(request.key!!, request.participant!!)
 
         if (!optional.isPresent) {
-            logger.error("cliente não foi encontrado: Cliente ID: ${request.clienteId}")
+            logger.error("não foi encontrado cliente com a chave ${request.key}")
 
             throw NotFoundException("cliente não foi encontrado")
         }
 
-        this.chavePixRepository.delete(optional.get())
+        val chavePix = optional.get()
+
+        this.chavePixRepository.delete(chavePix)
+        this.bcbService.removeChavePix(chavePix)
+
+        logger.info("chave pix foi removida do clienteID ${chavePix.clienteId}")
     }
 }

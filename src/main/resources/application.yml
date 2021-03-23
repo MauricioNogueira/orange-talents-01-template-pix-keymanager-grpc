@@ -4,6 +4,8 @@ micronaut:
 
 itau:
   url: "http://localhost:9091"
+bcb:
+  url: "http://localhost:8082"
 
 datasources:
   default:

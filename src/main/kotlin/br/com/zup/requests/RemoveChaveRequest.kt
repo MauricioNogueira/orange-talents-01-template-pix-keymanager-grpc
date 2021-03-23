@@ -7,13 +7,11 @@ import javax.validation.constraints.NotBlank
 @Introspected
 class RemoveChaveRequest(
 
-    @field:ValidUUID
     @field:NotBlank
-    val pixId: String?,
+    val key: String?,
 
-    @field:ValidUUID
     @field:NotBlank
-    val clienteId: String?
+    val participant: String?
 ) {
 
 }
