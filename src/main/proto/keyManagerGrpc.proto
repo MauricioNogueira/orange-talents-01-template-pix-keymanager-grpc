@@ -14,9 +14,9 @@ service KeyManagerGrpcService {
 enum TipoChave {
   UNKNOWN_TYPE = 0;
   CPF = 1;
-  TELEFONE = 2;
+  PHONE = 2;
   EMAIL = 3;
-  ALEATORIA = 4;
+  RANDOM = 4;
 }
 
 enum TipoConta {

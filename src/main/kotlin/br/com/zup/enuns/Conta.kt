@@ -13,7 +13,7 @@ enum class Conta: ContaInterface {
 
     POUPANCA {
         override fun sigla(): String {
-            return "CACC"
+            return "SVGS"
         }
 
         override fun descricao(): String {

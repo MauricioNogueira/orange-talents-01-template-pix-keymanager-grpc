@@ -1,6 +1,6 @@
-package br.com.zup.validations
+package br.com.zup.enuns
 
-import java.util.*
+import br.com.zup.validations.TipoChaveValidator
 
 enum class TipoChave: TipoChaveValidator {
     CPF {
@@ -15,7 +15,7 @@ enum class TipoChave: TipoChaveValidator {
         }
     },
 
-    TELEFONE {
+    PHONE {
         override fun validate(value: String): Boolean {
             val regex: Regex = Regex(pattern = "^\\+[1-9][0-9]\\d{1,14}\$")
 
@@ -39,7 +39,7 @@ enum class TipoChave: TipoChaveValidator {
         }
     },
 
-    ALEATORIA {
+    RANDOM {
         override fun validate(value: String): Boolean {
             val regex: Regex = Regex(pattern = "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\$")
 

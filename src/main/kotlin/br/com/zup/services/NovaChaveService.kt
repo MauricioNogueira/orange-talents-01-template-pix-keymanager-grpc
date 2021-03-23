@@ -10,10 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import javax.validation.Valid
 import br.com.zup.model.ChavePix
-import br.com.zup.requests.BankAccount
-import br.com.zup.requests.CreatePixKeyRequest
-import br.com.zup.requests.Owner
-import br.com.zup.validations.TipoChave
+import br.com.zup.enuns.TipoChave
 import org.slf4j.Logger
 import java.util.*
 import javax.transaction.Transactional
@@ -46,11 +43,13 @@ class NovaChaveService(
 
         var chavePix: ChavePix = novaChave.toModel(contaCliente)
 
+        val response = this.bcbService.cadastrarChavePix(contaCliente, chavePix)
+
+        chavePix.valorChave = response!!.key
+
         TipoChave.valueOf(novaChave.tipoChave.name).validate(chavePix.valorChave!!)
 
         chavePix = this.chavePixRepository.save(chavePix)
-
-        this.bcbService.cadastrarChavePix(contaCliente, chavePix)
 
         logger.info("chave pix registrada com sucesso")
 
