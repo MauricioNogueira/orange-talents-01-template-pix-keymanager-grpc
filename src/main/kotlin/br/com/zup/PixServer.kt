@@ -4,20 +4,22 @@ import br.com.zup.handle.ErrorHandler
 import br.com.zup.model.ChavePix
 import br.com.zup.requests.NovaChaveRequest
 import br.com.zup.requests.toData
+import br.com.zup.services.ConsultaChavePixService
 import br.com.zup.services.NovaChaveService
 import br.com.zup.services.RemoveChaveService
 import io.grpc.stub.StreamObserver
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.ZoneId
 import javax.inject.Inject
 import javax.inject.Singleton
-import javax.transaction.Transactional
 
 @Singleton
 @ErrorHandler
 class PixServer(
     @Inject private val novaChaveService: NovaChaveService,
-    @Inject private val removeChaveService: RemoveChaveService
+    @Inject private val removeChaveService: RemoveChaveService,
+    @Inject private val consultaChavePixService: ConsultaChavePixService
     ) : KeyManagerGrpcServiceGrpc.KeyManagerGrpcServiceImplBase() {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
@@ -52,6 +54,35 @@ class PixServer(
 
 
         responseObserver.onNext(response)
+        responseObserver.onCompleted()
+    }
+
+    override fun consultaChavePix(request: ConsultaChavePixRequest, responseObserver: StreamObserver<ConsultaChavePixResponse>) {
+
+        val chavePixInfo = this.consultaChavePixService.consulta(request)
+
+        responseObserver.onNext(ConsultaChavePixResponse.newBuilder()
+            .setClienteId(chavePixInfo.clienteId)
+            .setPixId(chavePixInfo.pixId)
+            .setTitular(chavePixInfo.titular)
+            .setCpf(chavePixInfo.cpf)
+            .setTipoChave(chavePixInfo.tipoChave)
+            .setValorChave(chavePixInfo.valorChave)
+            .setConta(Conta.newBuilder()
+                .setTipoConta(chavePixInfo.conta?.tipoConta?.descricao())
+                .setAgencia(chavePixInfo.conta?.agencia)
+                .setInstituicao(chavePixInfo.conta?.instituicao)
+                .setNumero(chavePixInfo.conta?.numero)
+                .build())
+            .setCriado(chavePixInfo.criado.let {
+                val createdAt = it?.atZone(ZoneId.of("UTC"))?.toInstant()
+
+                com.google.protobuf.Timestamp.newBuilder()
+                    .setSeconds(createdAt?.epochSecond!!)
+                    .setNanos(createdAt.nano)
+                    .build()
+            })
+            .build())
         responseObserver.onCompleted()
     }
 }

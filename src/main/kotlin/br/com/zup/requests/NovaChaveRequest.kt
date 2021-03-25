@@ -35,12 +35,14 @@ class NovaChaveRequest(
 
         return ChavePix().apply {
             tipoChave =  chave
-            valorChave = if (valor!!.isEmpty() && chave.equals("ALEATORIA")) UUID.randomUUID().toString() else valor
+            valorChave = if (valor!!.isEmpty() && chave.equals("RANDOM")) UUID.randomUUID().toString() else valor
             tipoConta = conta
             clienteId = idenficadorCliente
             participant = contaClienteResponse.instituicao.ispb
             branch = contaClienteResponse.agencia
             accountNumber = contaClienteResponse.numero
+            titular = contaClienteResponse.titular.nome
+            cpf = contaClienteResponse.titular.cpf
         }
     }
 

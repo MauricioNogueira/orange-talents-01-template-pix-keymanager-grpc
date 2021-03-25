@@ -5,7 +5,6 @@ import br.com.zup.repository.ChavePixRepository
 import br.com.zup.requests.RemoveChaveRequest
 import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import javax.transaction.Transactional
@@ -15,7 +14,7 @@ import javax.validation.Valid
 @Singleton
 class RemoveChaveService(
     @Inject private val chavePixRepository: ChavePixRepository,
-    @Inject private val bcbService: BCBService
+    @Inject private val bcbService: BCBServiceImpl
 ) {
     val logger = LoggerFactory.getLogger(this.javaClass)
 

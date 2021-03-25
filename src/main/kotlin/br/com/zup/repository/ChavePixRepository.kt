@@ -10,4 +10,6 @@ import java.util.*
 interface ChavePixRepository: JpaRepository<ChavePix, UUID> {
     fun findByClienteIdAndTipoContaAndTipoChave(clienteId: String, tipoConta: String, tipoChave: String): Optional<ChavePix>
     fun findByValorChaveAndParticipant(key: String, pariticipant: String): Optional<ChavePix>
+    fun findByIdAndClienteId(uuid: UUID, clienteId: String): Optional<ChavePix>
+    fun findByValorChave(chavePix: String): Optional<ChavePix>
 }

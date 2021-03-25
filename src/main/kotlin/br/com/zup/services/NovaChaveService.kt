@@ -17,14 +17,14 @@ import javax.transaction.Transactional
 
 @Validated
 @Singleton
-@Transactional
 class NovaChaveService(
     @Inject private val itauService: ItauService,
     @Inject private val chavePixRepository: ChavePixRepository,
-    @Inject private val bcbService: BCBService
+    @Inject private val bcbService: BCBServiceImpl
     ) {
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
+    @Transactional
     fun registrar(@Valid novaChave: NovaChaveRequest): ChavePix {
 
         val contaCliente = this.itauService.buscaCliente(novaChave.idenficadorCliente, Conta.valueOf(novaChave.tipoConta.name).descricao()) ?: throw IllegalArgumentException("cliente não foi encontrado")
@@ -46,6 +46,10 @@ class NovaChaveService(
         val response = this.bcbService.cadastrarChavePix(contaCliente, chavePix)
 
         chavePix.valorChave = response!!.key
+
+        chavePix.apply {
+            createdAt = response.createdAt
+        }
 
         TipoChave.valueOf(novaChave.tipoChave.name).validate(chavePix.valorChave!!)
 

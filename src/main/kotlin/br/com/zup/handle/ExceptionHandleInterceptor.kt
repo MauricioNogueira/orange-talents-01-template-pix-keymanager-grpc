@@ -2,6 +2,7 @@ package br.com.zup.handle
 
 import br.com.zup.PixServer
 import br.com.zup.exceptions.DataRegisterException
+import br.com.zup.exceptions.NotFoundException
 import com.google.rpc.BadRequest
 import io.grpc.Status
 import com.google.rpc.Status as StatusGoogleRPC
@@ -33,8 +34,11 @@ class ExceptionHandleInterceptor: MethodInterceptor<PixServer, Any?> {
                 is IllegalArgumentException -> Status.INVALID_ARGUMENT.withDescription(e.message).asRuntimeException()
                 is ConstraintViolationException -> constraintViolationExceptionHandle(e)
                 is DataRegisterException -> Status.ALREADY_EXISTS.withDescription(e.message).asRuntimeException()
-                is HttpClientResponseException -> Status.NOT_FOUND.withDescription("conta do cliente não foi encontrada").asRuntimeException()
-                else -> Status.UNKNOWN.withDescription("erro interno").asRuntimeException()
+                is NotFoundException -> Status.NOT_FOUND.withDescription(e.message).asRuntimeException()
+                else -> {
+                    e.printStackTrace()
+                    Status.UNKNOWN.withDescription("houve um erro interno no sistema").asRuntimeException()
+                }
             }
 
             val responseObserver = context.parameterValues[1] as StreamObserver<*>
