@@ -12,6 +12,7 @@ service KeyManagerGrpcService {
   rpc novaChavePix (NovaChavePixRequest) returns (NovaChavePixResponse) {}
   rpc removeChavePix (RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
   rpc consultaChavePix (ConsultaChavePixRequest) returns (ConsultaChavePixResponse) {}
+  rpc listarChavePix (ListarChavePixRequest) returns (ListarChavePixResponse) {}
 }
 
 enum TipoChave {
@@ -77,4 +78,21 @@ message Conta {
   string agencia = 2;
   string numero = 3;
   string tipoConta = 4;
+}
+
+message ListarChavePixRequest {
+  string clienteId = 1;
+}
+
+message ListarChavePixResponse {
+  repeated ChavePix chavesPix = 1;
+}
+
+message ChavePix {
+  string pixId = 1;
+  string clienteId = 2;
+  string tipoChave = 3;
+  string valorChave = 4;
+  TipoConta tipoConta = 5;
+  google.protobuf.Timestamp criacaoChave = 6;
 }

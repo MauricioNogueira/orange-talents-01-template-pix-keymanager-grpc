@@ -7,7 +7,7 @@ import io.micronaut.http.annotation.QueryValue
 import io.micronaut.http.client.annotation.Client
 
 @Client("\${itau.url}")
-interface ItauService {
+interface ItauClient {
 
     @Get(value = "/api/v1/clientes/{clienteId}/contas")
     fun buscaCliente(@PathVariable clienteId: String, @QueryValue tipo: String): ContaClienteResponse?

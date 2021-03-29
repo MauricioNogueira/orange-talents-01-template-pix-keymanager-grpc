@@ -18,9 +18,9 @@ import javax.transaction.Transactional
 @Validated
 @Singleton
 class NovaChaveService(
-    @Inject private val itauService: ItauService,
+    @Inject private val itauService: ItauClient,
     @Inject private val chavePixRepository: ChavePixRepository,
-    @Inject private val bcbService: BCBServiceImpl
+    @Inject private val bcbService: BCBService
     ) {
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 

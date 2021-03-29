@@ -14,7 +14,7 @@ import javax.validation.Valid
 @Singleton
 class RemoveChaveService(
     @Inject private val chavePixRepository: ChavePixRepository,
-    @Inject private val bcbService: BCBServiceImpl
+    @Inject private val bcbService: BCBService
 ) {
     val logger = LoggerFactory.getLogger(this.javaClass)
 

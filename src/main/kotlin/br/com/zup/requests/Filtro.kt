@@ -5,8 +5,9 @@ import br.com.zup.dto.Conta
 import br.com.zup.exceptions.NotFoundException
 import br.com.zup.enuns.Conta as ContaEnum
 import br.com.zup.repository.ChavePixRepository
+import br.com.zup.response.ConsultaChavePixResponse
 import br.com.zup.response.CreatePixKeyResponse
-import br.com.zup.services.BCBServiceImpl
+import br.com.zup.services.BCBService
 import br.com.zup.validations.ValidUUID
 import io.micronaut.core.annotation.Introspected
 import org.slf4j.LoggerFactory
@@ -19,7 +20,7 @@ sealed class Filtro {
 
     val logger = LoggerFactory.getLogger(this.javaClass)
 
-    abstract fun consultar(bcbServiceImpl: BCBServiceImpl, chavePixRepository: ChavePixRepository): ChavePixInfo;
+    abstract fun consultar(bcbServiceImpl: BCBService, chavePixRepository: ChavePixRepository): ChavePixInfo;
 
     @Introspected
     data class DadosPix(
@@ -32,7 +33,7 @@ sealed class Filtro {
         val pixId: String
         ) : Filtro() {
 
-        override fun consultar(bcbServiceImpl: BCBServiceImpl, chavePixRepository: ChavePixRepository): ChavePixInfo {
+        override fun consultar(bcbServiceImpl: BCBService, chavePixRepository: ChavePixRepository): ChavePixInfo {
             val uuid = UUID.fromString(this.pixId)
 
             val optional = chavePixRepository.findByIdAndClienteId(uuid, this.clienteId)
@@ -68,9 +69,9 @@ sealed class Filtro {
         val chavePix: String
         ): Filtro() {
 
-        override fun consultar(bcbServiceImpl: BCBServiceImpl, chavePixRepository: ChavePixRepository): ChavePixInfo {
+        override fun consultar(bcbServiceImpl: BCBService, chavePixRepository: ChavePixRepository): ChavePixInfo {
             val chavePixEntity = chavePixRepository.findByValorChave(chavePix).orElse(null)
-            var result: CreatePixKeyResponse? = null
+            var result: ConsultaChavePixResponse? = null
 
             if (chavePixEntity == null) {
                 logger.error("chave pix não foi encontrada no banco local")
@@ -100,7 +101,7 @@ sealed class Filtro {
 
     @Introspected
     class Invalido() : Filtro() {
-        override fun consultar(bcbServiceImpl: BCBServiceImpl, chavePixRepository: ChavePixRepository): ChavePixInfo {
+        override fun consultar(bcbServiceImpl: BCBService, chavePixRepository: ChavePixRepository): ChavePixInfo {
             throw IllegalArgumentException("você não está enviando os dados do pix ou chave pix")
         }
     }

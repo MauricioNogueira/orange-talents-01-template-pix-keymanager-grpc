@@ -2,9 +2,11 @@ package br.com.zup
 
 import br.com.zup.handle.ErrorHandler
 import br.com.zup.model.ChavePix
+import br.com.zup.ChavePix as ChavePixProto
 import br.com.zup.requests.NovaChaveRequest
 import br.com.zup.requests.toData
 import br.com.zup.services.ConsultaChavePixService
+import br.com.zup.services.ListarChavePixService
 import br.com.zup.services.NovaChaveService
 import br.com.zup.services.RemoveChaveService
 import io.grpc.stub.StreamObserver
@@ -19,7 +21,8 @@ import javax.inject.Singleton
 class PixServer(
     @Inject private val novaChaveService: NovaChaveService,
     @Inject private val removeChaveService: RemoveChaveService,
-    @Inject private val consultaChavePixService: ConsultaChavePixService
+    @Inject private val consultaChavePixService: ConsultaChavePixService,
+    @Inject private val listarChavePixService: ListarChavePixService
     ) : KeyManagerGrpcServiceGrpc.KeyManagerGrpcServiceImplBase() {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
@@ -83,6 +86,35 @@ class PixServer(
                     .build()
             })
             .build())
+        responseObserver.onCompleted()
+    }
+
+    override fun listarChavePix(request: ListarChavePixRequest, responseObserver: StreamObserver<ListarChavePixResponse>) {
+        val lista = this.listarChavePixService.listarChavePix(request.clienteId)
+
+        val listaChavePixProto = ListarChavePixResponse.newBuilder()
+
+        for (chavePix in lista.iterator()) {
+            listaChavePixProto.addChavesPix(ChavePixProto.newBuilder()
+                .setPixId(chavePix.id.toString())
+                .setClienteId(chavePix.clienteId)
+                .setTipoChave(chavePix.tipoChave)
+                .setValorChave(chavePix.valorChave)
+                .setTipoConta(TipoConta.valueOf(chavePix.tipoConta!!))
+                .setCriacaoChave(chavePix.createdAt.let {
+                    val createdAt = it?.atZone(ZoneId.of("UTC"))?.toInstant()
+
+                    com.google.protobuf.Timestamp.newBuilder()
+                        .setSeconds(createdAt?.epochSecond!!)
+                        .setNanos(createdAt.nano)
+                        .build()
+                }))
+        }
+
+        responseObserver.onNext(listaChavePixProto.build())
+
+        logger.info("Lista de chave PIX efetuada com sucesso")
+
         responseObserver.onCompleted()
     }
 }
