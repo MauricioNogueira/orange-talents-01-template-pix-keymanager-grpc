@@ -28,8 +28,6 @@ class ExceptionHandleInterceptor: MethodInterceptor<PixServer, Any?> {
         try {
             return context.proceed()
         } catch (e: Exception) {
-            logger.error(e.message)
-
             val error = when(e) {
                 is IllegalArgumentException -> Status.INVALID_ARGUMENT.withDescription(e.message).asRuntimeException()
                 is ConstraintViolationException -> constraintViolationExceptionHandle(e)
@@ -60,7 +58,7 @@ class ExceptionHandleInterceptor: MethodInterceptor<PixServer, Any?> {
 
         val statusProto = StatusGoogleRPC.newBuilder()
             .setCode(Code.INVALID_ARGUMENT_VALUE)
-            .setMessage("requisição inválida")
+            .setMessage(e.message)
             .addDetails(com.google.protobuf.Any.pack(badRequest))
             .build()
 

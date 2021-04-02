@@ -7,13 +7,16 @@ itau:
 bcb:
   url: "http://localhost:8082"
 
+grpc:
+  server:
+    port: ${SERVER_PORT:50051}
+
 datasources:
   default:
     url: ${JDBC_URL:`jdbc:postgresql://localhost:5432/projeto_pix`}
     username: ${JDBC_USER:zup}
     password: ${JDBC_PASSWORD:password}
     driverClassName: ${JDBC_DRIVER:org.postgresql.Driver}
-    database:
 
 jpa:
   default:

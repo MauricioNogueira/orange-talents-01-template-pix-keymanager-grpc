@@ -42,8 +42,8 @@ message NovaChavePixResponse {
 }
 
 message RemoveChavePixRequest {
-  string key = 1;
-  string participant = 2;
+  string pixId = 1;
+  string clienteId = 2;
 }
 
 message RemoveChavePixResponse {

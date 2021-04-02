@@ -38,7 +38,7 @@ class NovaChaveService(
         if (optional.isPresent) {
             logger.error("chave pix já foi cadastrada: ${optional.get()}")
 
-            throw DataRegisterException("chave pix já foi cadastrada para esta chave")
+            throw DataRegisterException("${novaChave.tipoChave.name} já foi usado para cadastro")
         }
 
         var chavePix: ChavePix = novaChave.toModel(contaCliente)

@@ -18,6 +18,7 @@ import javax.inject.Singleton
 
 @Singleton
 @ErrorHandler
+@Suppress("unused")
 class PixServer(
     @Inject private val novaChaveService: NovaChaveService,
     @Inject private val removeChaveService: RemoveChaveService,

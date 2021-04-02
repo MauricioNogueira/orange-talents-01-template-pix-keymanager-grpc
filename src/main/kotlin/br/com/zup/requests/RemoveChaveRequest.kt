@@ -8,10 +8,10 @@ import javax.validation.constraints.NotBlank
 class RemoveChaveRequest(
 
     @field:NotBlank
-    val key: String?,
+    val pixId: String?,
 
     @field:NotBlank
-    val participant: String?
+    val clienteId: String?
 ) {
 
 }

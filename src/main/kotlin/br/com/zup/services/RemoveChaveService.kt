@@ -5,6 +5,7 @@ import br.com.zup.repository.ChavePixRepository
 import br.com.zup.requests.RemoveChaveRequest
 import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import javax.transaction.Transactional
@@ -20,13 +21,14 @@ class RemoveChaveService(
 
     @Transactional
     fun remove(@Valid request: RemoveChaveRequest) {
+        val uuid = UUID.fromString(request.pixId)
 
-        val optional = this.chavePixRepository.findByValorChaveAndParticipant(request.key!!, request.participant!!)
+        val optional = this.chavePixRepository.findByIdAndClienteId(uuid, request.clienteId!!)
 
         if (!optional.isPresent) {
-            logger.error("não foi encontrado cliente com a chave ${request.key}")
+            logger.error("não foi encontrado cliente com ID ${request.clienteId}")
 
-            throw NotFoundException("cliente não foi encontrado")
+            throw NotFoundException("não foi encontrado chave pix do cliente solicitado")
         }
 
         val chavePix = optional.get()
