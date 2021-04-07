@@ -23,7 +23,6 @@ class NovaChaveRequest(
     val tipoChave: TipoChave,
 
     @field:Size(max = 77)
-    @field:NotBlank
     val valor: String? = "",
 
     @field:NotNull

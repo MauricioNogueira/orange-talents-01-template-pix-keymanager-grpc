@@ -15,7 +15,7 @@ import br.com.zup.response.ConsultaChavePixResponse
 import br.com.zup.response.CreatePixKeyResponse
 
 @Singleton
-class BCBService(@Inject private val bcbClient: BCBClient) {
+open class BCBService(@Inject private val bcbClient: BCBClient) {
 
     val logger = LoggerFactory.getLogger(this.javaClass)
 

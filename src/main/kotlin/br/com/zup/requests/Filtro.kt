@@ -43,7 +43,7 @@ sealed class Filtro {
 
                 val result = bcbServiceImpl.consultar(pix.valorChave!!)
 
-                val dadosConta = Conta(instituicao = "ITAÚ UNIBANCO S.A", agencia = pix.branch!!, numero = pix.accountNumber!!, tipoConta = ContaEnum.valueOf(pix.tipoConta!!))
+                val dadosConta = Conta(instituicao = "ITAU UNIBANCO S.A", agencia = pix.branch!!, numero = pix.accountNumber!!, tipoConta = ContaEnum.valueOf(pix.tipoConta!!))
                 val chavePixInfo = ChavePixInfo().apply {
                     pixId = pix.id.toString()
                     clienteId = pix.clienteId!!
