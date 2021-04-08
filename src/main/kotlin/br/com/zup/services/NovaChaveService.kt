@@ -11,6 +11,7 @@ import javax.inject.Singleton
 import javax.validation.Valid
 import br.com.zup.model.ChavePix
 import br.com.zup.enuns.TipoChave
+import br.com.zup.exceptions.NotFoundException
 import org.slf4j.Logger
 import java.util.*
 import javax.transaction.Transactional
@@ -27,7 +28,7 @@ class NovaChaveService(
     @Transactional
     fun registrar(@Valid novaChave: NovaChaveRequest): ChavePix {
 
-        val contaCliente = this.itauService.buscaCliente(novaChave.idenficadorCliente, Conta.valueOf(novaChave.tipoConta.name).descricao()) ?: throw IllegalArgumentException("cliente não foi encontrado")
+        val contaCliente = this.itauService.buscaCliente(novaChave.idenficadorCliente, Conta.valueOf(novaChave.tipoConta.name).descricao()) ?: throw NotFoundException("cliente não foi encontrado")
 
         val optional: Optional<ChavePix> = this.chavePixRepository.findByClienteIdAndTipoContaAndTipoChave(
             contaCliente.titular.id,

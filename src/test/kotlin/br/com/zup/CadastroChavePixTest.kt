@@ -1,7 +1,6 @@
 package br.com.zup
 
 import br.com.zup.cadastro.CriaRequestNovaChavePix
-import br.com.zup.exceptions.DataRegisterException
 import br.com.zup.model.ChavePix
 import br.com.zup.requests.NovaChaveRequest
 import br.com.zup.services.NovaChaveService
