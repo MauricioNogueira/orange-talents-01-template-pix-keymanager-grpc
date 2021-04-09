@@ -60,8 +60,4 @@ open class BCBService(@Inject private val bcbClient: BCBClient) {
 
         return result
     }
-
-    fun listarChavePix() {
-
-    }
 }

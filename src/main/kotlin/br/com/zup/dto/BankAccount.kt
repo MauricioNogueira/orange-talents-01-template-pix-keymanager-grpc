@@ -1,6 +1,6 @@
 package br.com.zup.dto
 
-class BankAccount(
+data class BankAccount(
     val participant: String?,
     val branch: String?,
     val accountNumber: String?,

@@ -1,6 +1,6 @@
 package br.com.zup.dto
 
-class Owner(
+data class Owner(
     val type: String,
     val name: String,
     val taxIdNumber: String

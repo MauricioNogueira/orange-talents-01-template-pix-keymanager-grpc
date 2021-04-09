@@ -5,30 +5,30 @@ import br.com.zup.TipoChave
 import br.com.zup.TipoConta
 import br.com.zup.requests.NovaChaveRequest
 
-class CriaRequestNovaChavePix {
-    var tipoChave: TipoChave? = null
-    var valorChave: String? = null
-    var tipoConta: TipoConta? = null
-    var clienteId: String? = null
+class CriaRequestNovaChavePixBuild {
+    var tipoChave: TipoChave? = TipoChave.UNKNOWN_TYPE
+    var valorChave: String? = ""
+    var tipoConta: TipoConta? = TipoConta.UNKNOWN_ACCOUNT
+    var clienteId: String? = ""
 
-    fun tipoChave(tipoChave: TipoChave): CriaRequestNovaChavePix {
+    fun tipoChave(tipoChave: TipoChave): CriaRequestNovaChavePixBuild {
         this.tipoChave = tipoChave
 
         return this
     }
 
-    fun valorChave(valorChave: String): CriaRequestNovaChavePix {
+    fun valorChave(valorChave: String): CriaRequestNovaChavePixBuild {
         this.valorChave = valorChave
 
         return this
     }
 
-    fun tipoConta(tipoConta: TipoConta): CriaRequestNovaChavePix {
+    fun tipoConta(tipoConta: TipoConta): CriaRequestNovaChavePixBuild {
         this.tipoConta = tipoConta
         return this
     }
 
-    fun clienteId(clienteId: String): CriaRequestNovaChavePix {
+    fun clienteId(clienteId: String): CriaRequestNovaChavePixBuild {
         this.clienteId = clienteId
         return this
     }
@@ -44,5 +44,9 @@ class CriaRequestNovaChavePix {
 
     fun toRequest(): NovaChaveRequest {
         return NovaChaveRequest(this.clienteId!!, this.tipoChave!!, this.valorChave, this.tipoConta!!)
+    }
+
+    override fun toString(): String {
+        return "CriaRequestNovaChavePix(tipoChave=$tipoChave, valorChave=$valorChave, tipoConta=$tipoConta, clienteId=$clienteId)"
     }
 }

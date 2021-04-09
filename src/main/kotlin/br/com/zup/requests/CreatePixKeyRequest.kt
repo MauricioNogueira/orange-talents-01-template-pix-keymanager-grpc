@@ -4,7 +4,7 @@ import br.com.zup.dto.BankAccount
 import br.com.zup.dto.Owner
 import java.time.LocalDateTime
 
-class CreatePixKeyRequest(
+data class CreatePixKeyRequest(
     val keyType: String,
     val key: String,
     val bankAccount: BankAccount,
