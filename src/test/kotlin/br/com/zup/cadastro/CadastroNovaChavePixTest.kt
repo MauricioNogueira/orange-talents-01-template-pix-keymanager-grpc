@@ -12,6 +12,8 @@ import br.com.zup.response.Titular
 import br.com.zup.services.BCBClient
 import br.com.zup.services.ItauClient
 import io.grpc.ManagedChannel
+import io.grpc.Status
+import io.grpc.StatusRuntimeException
 import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
@@ -20,6 +22,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -85,6 +88,87 @@ class CadastroNovaChavePixTest(
         Assertions.assertEquals(chavePix.clienteId, chavePixBanco.clienteId)
         Assertions.assertEquals("EMAIL", chavePixBanco.tipoChave)
         Assertions.assertEquals("CORRENTE", chavePixBanco.tipoConta)
+    }
+
+    @Test
+    fun `nao deve cadastrar uma chave pix com chaves iguais`() {
+
+        val chavePixRegistrada = ChavePix().apply {
+            accountNumber = "123455"
+            branch = "0001"
+            clienteId = "5260263c-a3c1-4727-ae32-3bdb2538841b"
+            cpf = "86135457004"
+            participant = "60701190"
+            tipoChave = "EMAIL"
+            tipoConta = "CORRENTE"
+            titular = "Yuri Matheus"
+            valorChave = "yuri.mathues@zup.com.br"
+            createdAt = LocalDateTime.now()
+        }
+
+        this.chavePixRepository.save(chavePixRegistrada)
+
+        // -----------------  ---------------------
+
+        val request = this.criaRequestNovaChavePixBuild(
+            tipoChave = TipoChave.EMAIL,
+            clienteId = "5260263c-a3c1-4727-ae32-3bdb2538841b",
+            valorChave = "yuri.matheus@zup.com.br",
+            tipoConta = TipoConta.CORRENTE
+        )
+
+        val contaClienteResponse = this.respostaItauClient(
+            agencia = "0001",
+            numeroConta = "123455",
+            nameTipoChave = request.tipoChave!!.name,
+            titular = TitularBuild().id("5260263c-a3c1-4727-ae32-3bdb2538841b").nome("Yuri Matheus").cpf("86135457004").build(),
+            instituicao = InstituicaoBuild().nome("ITAÚ UNIBANCO S.A.").ispb("60701190").build()
+        )
+
+        val chavePix = ChavePixBuild()
+            .setTipoChave(contaClienteResponse.tipo)
+            .setValorChave(request.valorChave!!)
+            .setTipoConta(request.tipoConta!!.name)
+            .setClienteId(contaClienteResponse.titular.id)
+            .setParticipant(contaClienteResponse.instituicao.ispb)
+            .setBranch(contaClienteResponse.agencia)
+            .setAccountNumber(contaClienteResponse.numero)
+            .setTitular(contaClienteResponse.titular.nome)
+            .setCpf(contaClienteResponse.titular.cpf).build()
+
+        Mockito.`when`(this.itauClient.buscaCliente(clienteId = "5260263c-a3c1-4727-ae32-3bdb2538841b", tipo = "CONTA_CORRENTE"))
+            .thenReturn(contaClienteResponse)
+
+        val requestBcbClient = this.createChavePixRequestBuild(chavePix)
+
+        Mockito.`when`(this.bcbClient.registarChavePix(requestBcbClient))
+            .thenReturn(this.createChavePixResponseBuild(chavePix))
+
+        val error = assertThrows<StatusRuntimeException> {
+            val response = this.grpcClient.novaChavePix(request.build())
+        }
+
+        // RESULTADO
+
+        Assertions.assertEquals(Status.ALREADY_EXISTS.code, error.status.code)
+        Assertions.assertEquals("EMAIL já foi usado para cadastro", error.status.description)
+    }
+
+    @Test
+    fun `nao deve cadastrar chave pix caso cliente nao tiver cadastro`() {
+        val request = this.criaRequestNovaChavePixBuild(
+            tipoChave = TipoChave.EMAIL,
+            clienteId = "5260263c-a3c1-4727-ae32-3bdb2538841b",
+            valorChave = "yuri.matheus@zup.com.br",
+            tipoConta = TipoConta.CORRENTE
+        )
+
+        val error = assertThrows<StatusRuntimeException> {
+            val response = this.grpcClient.novaChavePix(request.build())
+        }
+
+        Assertions.assertEquals(Status.NOT_FOUND.code, error.status.code)
+        Assertions.assertEquals("cliente não foi encontrado", error.status.description)
     }
 
     @Factory
